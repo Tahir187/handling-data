@@ -1,28 +1,20 @@
-const mongoose = require('mongoose');
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const dotenv = require('dotenv');
+const morgan = require('morgan');
 
 const app = express();
-app.use(express.bodyParser());
+// setting config path and port for back end
+dotenv.config = ({path: 'config.dnv'});
+const PORT = process.env.PORT || 8081
 
-mongoose.connect('mongodb://localhost/Company');
-
-const mySchema = new mongoose.Schema({
-    _id : String,
-    name : String,
-    age : Number
+// log  request 
+app.use(morgan('tiny'))
+// creating req and res function
+app.get('/', (req, res)=>{
+    res.send("CRUD Application");
 });
 
-// check if application is successfullyb connected to mongodb server
-const db = mongoose.connection('mongodb://localhost/Company');
-db.on('error', console.error.bind(console, 'connection error'));
-db.once('open', ()=>{
-    // all your database operations here
+// listening server and call back function
+app.listen(PORT, ()=>{
+    console.log(`Server is running on port. http://localhost:${PORT}`);
 })
-
-app.listen(8080, ()=>{
-    console.log('server is running at port 8080')
-})
-
-// creating a collection of emp and binding it with the schema mySchema
-const user = mongoose.model('emp', mySchema);
